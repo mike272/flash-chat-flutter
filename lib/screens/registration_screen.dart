@@ -13,6 +13,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final _auth = FirebaseAuth.instance;
   String email;
   String password;
+  String passwordAgain;
   bool showSpinner = false;
   @override
   Widget build(BuildContext context) {
@@ -58,6 +59,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   decoration: kTextFieldDecoration.copyWith(
                       hintText: 'Enter your password')),
               SizedBox(
+                height: 8.0,
+              ),
+              TextField(
+                  textAlign: TextAlign.center,
+                  obscureText: true,
+                  onChanged: (value) {
+                    passwordAgain = value;
+                  },
+                  decoration: kTextFieldDecoration.copyWith(
+                      hintText: 'Confirm your password')),
+              SizedBox(
                 height: 24.0,
               ),
               RoundedButton(
@@ -66,10 +78,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     setState(() {
                       showSpinner = true;
                     });
-                    final newUser = await _auth.createUserWithEmailAndPassword(
-                        email: email, password: password);
-                    if (newUser != null) {
-                      Navigator.pushNamed(context, 'chatScreen');
+                    if (password == passwordAgain) {
+                      final newUser =
+                          await _auth.createUserWithEmailAndPassword(
+                              email: email, password: password);
+                      if (newUser != null) {
+                        Navigator.pushNamed(context, 'chatScreen');
+                      }
+                    } else {
+                      //notification about wrong password
                     }
                     setState(() {
                       showSpinner = false;
